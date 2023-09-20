@@ -6,7 +6,7 @@ export const getUsuarios = async (req, res) => {
     res.json(result);
   } catch (error) {
     return res.status(500).json({
-      mensaje: "Algo salió mal, intentelo más tarde",
+      mensaje: error,
     });
   }
 };
