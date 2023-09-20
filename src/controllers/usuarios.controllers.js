@@ -1,15 +1,54 @@
 import { pool } from "../db.js";
 
-export const getUsuarios = (req, res) => {};
+export const getUsuarios = async (req, res) => {
+  try {
+    const [result] = await pool.query("SELECT * FROM usuario");
+    res.json(result);
+  } catch (error) {
+    return res.status(500).json({
+      mensaje: "Algo salió mal, intentelo más tarde",
+    });
+  }
+};
+
+export const getUsuarioById = async (req, res) => {
+  try {
+    const [result] = await pool.query(
+      "SELECT * FROM usuario Where id_usuario = ?",
+      [req.params.id_usuario]
+    );
+
+    if (result.length <= 0)
+      return res.status(404).json({
+        mensaje: "No se encontró ningun usuario",
+      });
+
+    res.json(result[0]);
+  } catch (error) {
+    return res.status(500).json({
+      mensaje: "Algo salió mal, intentelo más tarde",
+    });
+  }
+};
 
 export const createUsuario = async (req, res) => {
   try {
-    const { nombre, apellidos, contrasena, correo, rol } = req.body;
+    const { nombre, apellidos, contrasena, correo, rol, estado } = req.body;
+
+    const [result] = await pool.query(
+      "SELECT correo from USUARIO where correo = ?",
+      [correo]
+    );
+
+    if (result[0])
+      return res.status(400).send({
+        mensaje: "Correo existente, ingrese otro",
+      });
 
     const [rows] = await pool.query(
       "INSERT INTO usuario" +
-        "(nombre, apellidos, contrasena, correo, rol) VALUES (?,?,?,?,?)",
-      [nombre, apellidos, contrasena, correo, rol]
+        "(nombre, apellidos, contrasena, correo, rol, estado) VALUES (?,?,?,?,?,?)",
+      [nombre, apellidos, contrasena, correo, rol, estado]
     );
 
     res.send({
@@ -19,15 +58,73 @@ export const createUsuario = async (req, res) => {
       contrasena,
       correo,
       rol,
+      estado,
+      mensaje: "Usuario creado exitosamente",
     });
   } catch (error) {
-    res.send({
-      mensage: "Correo duplicado",
-      error: error.code,
+    return res.status(500).json({
+      mensaje: "Algo salió mal, intentelo más tarde",
     });
   }
 };
 
-export const updateUsuario = (req, res) => res.send("update");
+export const updateEstadoUsuario = async (req, res) => {
+  try {
+    const { id_usuario } = req.params;
+    const { estado } = req.body;
+    const [result] = await pool.query(
+      "UPDATE usuario SET estado = ? where id_usuario = ?",
+      [estado, id_usuario]
+    );
 
-export const deleteUsuario = (req, res) => res.send("delete");
+    if (result.affectedRows === 0)
+      return res.status(404).json({
+        mensaje: "No se encontró ningun usuario",
+      });
+
+    const [rows] = await pool.query(
+      "SELECT * FROM usuario WHERE id_usuario = ?",
+      [id_usuario]
+    );
+
+    res.send({
+      rows: rows[0],
+      mensaje: "El estado del usuario se actualizó exitosamente",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      mensaje: "Algo salió mal, intentelo más tarde",
+    });
+  }
+};
+
+export const updateUsuario = async (req, res) => {
+  try {
+    const { id_usuario } = req.params;
+    const { nombre, apellidos, contrasena, correo, rol, estado } = req.body;
+    const [result] = await pool.query(
+      "UPDATE usuario SET nombre = ? , apellidos = ? , contrasena = ? ," +
+        "correo = ?, rol = ?, estado = ? where id_usuario = ?",
+      [nombre, apellidos, contrasena, correo, rol, estado, id_usuario]
+    );
+
+    if (result.affectedRows === 0)
+      return res.status(404).json({
+        mensaje: "No se encontró ningun usuario",
+      });
+
+    const [rows] = await pool.query(
+      "SELECT * FROM usuario WHERE id_usuario = ?",
+      [id_usuario]
+    );
+
+    res.send({
+      rows: rows[0],
+      mensaje: "La información del usuario se actualizó exitosamente",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      mensaje: "Algo salió mal, intentelo más tarde",
+    });
+  }
+};
