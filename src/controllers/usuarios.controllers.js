@@ -31,43 +31,6 @@ export const getUsuarioById = async (req, res) => {
   }
 };
 
-export const createUsuario = async (req, res) => {
-  try {
-    const { nombre, apellidos, contrasena, correo, rol, estado } = req.body;
-
-    const [result] = await pool.query(
-      "SELECT correo from USUARIO where correo = ?",
-      [correo]
-    );
-
-    if (result[0])
-      return res.status(400).send({
-        mensaje: "Correo existente, ingrese otro",
-      });
-
-    const [rows] = await pool.query(
-      "INSERT INTO usuario" +
-        "(nombre, apellidos, contrasena, correo, rol, estado) VALUES (?,?,?,?,?,?)",
-      [nombre, apellidos, contrasena, correo, rol, estado]
-    );
-
-    res.send({
-      id_usuario: rows.insertId,
-      nombre,
-      apellidos,
-      contrasena,
-      correo,
-      rol,
-      estado,
-      mensaje: "Usuario creado exitosamente",
-    });
-  } catch (error) {
-    return res.status(500).json({
-      mensaje: "Algo salió mal, intentelo más tarde",
-    });
-  }
-};
-
 export const updateEstadoUsuario = async (req, res) => {
   try {
     const { id_usuario } = req.params;
@@ -93,7 +56,8 @@ export const updateEstadoUsuario = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({
-      mensaje: "Algo salió mal, intentelo más tarde",
+      error,
+      /* mensaje: "Algo salió mal, intentelo más tarde", */
     });
   }
 };
