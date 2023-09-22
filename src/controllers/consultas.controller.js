@@ -74,6 +74,7 @@ export const createConsulta = async (req, res) => {
         hora_inicio,
         hora_fin,
         estado,
+        mensaje: "Consulta registrada exitosamente",
       });
   } catch (error) {
     return res.status(500).json({
