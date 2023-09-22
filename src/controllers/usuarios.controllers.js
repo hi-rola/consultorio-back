@@ -56,8 +56,7 @@ export const updateEstadoUsuario = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({
-      error,
-      /* mensaje: "Algo salió mal, intentelo más tarde", */
+      mensaje: "Algo salió mal, intentelo más tarde",
     });
   }
 };
