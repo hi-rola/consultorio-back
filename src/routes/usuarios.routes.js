@@ -1,18 +1,17 @@
 import { Router } from "express";
 import {
   getUsuarios,
-  createUsuario,
   updateEstadoUsuario,
   getUsuarioById,
   updateUsuario,
 } from "../controllers/usuarios.controllers.js";
+import { validarJWT } from "../middlewares/validar-jwt.js";
 
 const router = Router();
 
-router.get("/usuarios", getUsuarios);
-router.get("/usuarios/:id_usuario", getUsuarioById);
-router.post("/usuarios", createUsuario);
-router.patch("/usuarios/:id_usuario", updateEstadoUsuario);
-router.put("/usuarios/:id_usuario", updateUsuario);
+router.get("/usuarios", validarJWT, getUsuarios);
+router.get("/usuarios/:id_usuario", validarJWT, getUsuarioById);
+router.patch("/usuarios/:id_usuario", validarJWT, updateEstadoUsuario);
+router.put("/usuarios/:id_usuario", validarJWT, updateUsuario);
 
 export default router;
