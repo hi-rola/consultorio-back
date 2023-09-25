@@ -91,3 +91,36 @@ export const updateUsuario = async (req, res) => {
     });
   }
 };
+
+export const reservarConsultaUsuario = async (req, res) => {
+  try {
+    const { id_usuario, id_consulta } = req.body;
+
+    const [rows] = await pool.query(
+      "INSERT INTO consulta_usuario (id_usuario, id_consulta) VALUES (?,?)",
+      [id_usuario, id_consulta]
+    );
+
+    const [result] = await pool.query(
+      "UPDATE consulta SET estado = 0 WHERE id_consulta = ?",
+      [id_consulta]
+    );
+
+    if (rows.affectedRows === 1 && result.affectedRows === 1) {
+      res.send({
+        id_consulta_usuario: rows.insertId,
+        id_usuario,
+        id_consulta,
+        mensaje: "La consulta se reservo exitosamente",
+      });
+    } else {
+      res.send({
+        mensaje: "Problemas al reservar la consulta, intentelo más tarde",
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      mensaje: "Algo salió mal, intentelo más tarde",
+    });
+  }
+};
