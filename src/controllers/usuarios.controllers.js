@@ -111,15 +111,18 @@ export const reservarConsultaUsuario = async (req, res) => {
         id_consulta_usuario: rows.insertId,
         id_usuario,
         id_consulta,
-        mensaje: "La consulta se reservo exitosamente",
+        ok: true,
+        mensaje: "Consulta reservada exitosamente",
       });
     } else {
       res.send({
+        ok: false,
         mensaje: "Problemas al reservar la consulta, intentelo más tarde",
       });
     }
   } catch (error) {
     return res.status(500).json({
+      ok: false,
       mensaje: "Algo salió mal, intentelo más tarde",
     });
   }
