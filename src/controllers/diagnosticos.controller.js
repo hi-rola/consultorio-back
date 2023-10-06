@@ -97,6 +97,7 @@ export const createDiagnostico = async (req, res) => {
       tercer_molar_inf_izq_cla,
       tercer_molar_inf_izq_gra,
       mensaje,
+      id_usuario,
     } = req.body;
 
     const [result] = await pool.query(
@@ -236,80 +237,103 @@ export const createDiagnostico = async (req, res) => {
       ]
     );
 
-    res.json({
-      id_diagnostico: result.insertId,
-      incisivo_central_sup_der_cla,
-      incisivo_central_sup_der_gra,
-      incisivo_lateral_sup_der_cla,
-      incisivo_lateral_sup_der_gra,
-      canino_sup_der_cla,
-      canino_sup_der_gra,
-      primer_premolar_sup_der_cla,
-      primer_premolar_sup_der_gra,
-      segundo_premolar_sup_der_cla,
-      segundo_premolar_sup_der_gra,
-      primer_molar_sup_der_cla,
-      primer_molar_sup_der_gra,
-      segundo_molar_sup_der_cla,
-      segundo_molar_sup_der_gra,
-      tercer_molar_sup_der_cla,
-      tercer_molar_sup_der_gra,
-      incisivo_central_sup_izq_cla,
-      incisivo_central_sup_izq_gra,
-      incisivo_lateral_sup_izq_cla,
-      incisivo_lateral_sup_izq_gra,
-      canino_sup_izq_cla,
-      canino_sup_izq_gra,
-      primer_premolar_sup_izq_cla,
-      primer_premolar_sup_izq_gra,
-      segundo_premolar_sup_izq_cla,
-      segundo_premolar_sup_izq_gra,
-      primer_molar_sup_izq_cla,
-      primer_molar_sup_izq_gra,
-      segundo_molar_sup_izq_cla,
-      segundo_molar_sup_izq_gra,
-      tercer_molar_sup_izq_cla,
-      tercer_molar_sup_izq_gra,
-      incisivo_central_inf_der_cla,
-      incisivo_central_inf_der_gra,
-      incisivo_lateral_inf_der_cla,
-      incisivo_lateral_inf_der_gra,
-      canino_inf_der_cla,
-      canino_inf_der_gra,
-      primer_premolar_inf_der_cla,
-      primer_premolar_inf_der_gra,
-      segundo_premolar_inf_der_cla,
-      segundo_premolar_inf_der_gra,
-      primer_molar_inf_der_cla,
-      primer_molar_inf_der_gra,
-      segundo_molar_inf_der_cla,
-      segundo_molar_inf_der_gra,
-      tercer_molar_inf_der_cla,
-      tercer_molar_inf_der_gra,
-      incisivo_central_inf_izq_cla,
-      incisivo_central_inf_izq_gra,
-      incisivo_lateral_inf_izq_cla,
-      incisivo_lateral_inf_izq_gra,
-      canino_inf_izq_cla,
-      canino_inf_izq_gra,
-      primer_premolar_inf_izq_cla,
-      primer_premolar_inf_izq_gra,
-      segundo_premolar_inf_izq_cla,
-      segundo_premolar_inf_izq_gra,
-      primer_molar_inf_izq_cla,
-      primer_molar_inf_izq_gra,
-      segundo_molar_inf_izq_cla,
-      segundo_molar_inf_izq_gra,
-      tercer_molar_inf_izq_cla,
-      tercer_molar_inf_izq_gra,
-      mensaje,
-      mensaje: "El diagnóstico se registro exitosamente",
-    });
+    console.log("entro 1");
+
+    const registrarUsuDiag = await registrarDiagnosticoUsuario(
+      result.insertId,
+      id_usuario
+    );
+
+    if (registrarUsuDiag === true) {
+      console.log("entro 2");
+      res.json({
+        id_diagnostico: result.insertId,
+        incisivo_central_sup_der_cla,
+        incisivo_central_sup_der_gra,
+        incisivo_lateral_sup_der_cla,
+        incisivo_lateral_sup_der_gra,
+        canino_sup_der_cla,
+        canino_sup_der_gra,
+        primer_premolar_sup_der_cla,
+        primer_premolar_sup_der_gra,
+        segundo_premolar_sup_der_cla,
+        segundo_premolar_sup_der_gra,
+        primer_molar_sup_der_cla,
+        primer_molar_sup_der_gra,
+        segundo_molar_sup_der_cla,
+        segundo_molar_sup_der_gra,
+        tercer_molar_sup_der_cla,
+        tercer_molar_sup_der_gra,
+        incisivo_central_sup_izq_cla,
+        incisivo_central_sup_izq_gra,
+        incisivo_lateral_sup_izq_cla,
+        incisivo_lateral_sup_izq_gra,
+        canino_sup_izq_cla,
+        canino_sup_izq_gra,
+        primer_premolar_sup_izq_cla,
+        primer_premolar_sup_izq_gra,
+        segundo_premolar_sup_izq_cla,
+        segundo_premolar_sup_izq_gra,
+        primer_molar_sup_izq_cla,
+        primer_molar_sup_izq_gra,
+        segundo_molar_sup_izq_cla,
+        segundo_molar_sup_izq_gra,
+        tercer_molar_sup_izq_cla,
+        tercer_molar_sup_izq_gra,
+        incisivo_central_inf_der_cla,
+        incisivo_central_inf_der_gra,
+        incisivo_lateral_inf_der_cla,
+        incisivo_lateral_inf_der_gra,
+        canino_inf_der_cla,
+        canino_inf_der_gra,
+        primer_premolar_inf_der_cla,
+        primer_premolar_inf_der_gra,
+        segundo_premolar_inf_der_cla,
+        segundo_premolar_inf_der_gra,
+        primer_molar_inf_der_cla,
+        primer_molar_inf_der_gra,
+        segundo_molar_inf_der_cla,
+        segundo_molar_inf_der_gra,
+        tercer_molar_inf_der_cla,
+        tercer_molar_inf_der_gra,
+        incisivo_central_inf_izq_cla,
+        incisivo_central_inf_izq_gra,
+        incisivo_lateral_inf_izq_cla,
+        incisivo_lateral_inf_izq_gra,
+        canino_inf_izq_cla,
+        canino_inf_izq_gra,
+        primer_premolar_inf_izq_cla,
+        primer_premolar_inf_izq_gra,
+        segundo_premolar_inf_izq_cla,
+        segundo_premolar_inf_izq_gra,
+        primer_molar_inf_izq_cla,
+        primer_molar_inf_izq_gra,
+        segundo_molar_inf_izq_cla,
+        segundo_molar_inf_izq_gra,
+        tercer_molar_inf_izq_cla,
+        tercer_molar_inf_izq_gra,
+        mensaje,
+        id_usuario,
+        ok: true,
+        msj: "Diagnóstico registrado exitosamente",
+      });
+    }
   } catch (error) {
     return res.status(500).json({
-      mensaje: "Algo salió mal, intentelo más tarde",
+      ok: false,
+      msj: "Algo salió mal, intentelo más tarde",
     });
   }
+};
+
+const registrarDiagnosticoUsuario = async (id_diagnostico, id_usuario) => {
+  const [rows] = await pool.query(
+    "INSERT INTO usuario_diagnostico (id_usuario, id_diagnostico) VALUES (?,?)",
+    [id_usuario, id_diagnostico]
+  );
+
+  if (rows.affectedRows === 1) return true;
+  return false;
 };
 
 export const updateDiagnostico = async (req, res) => {
