@@ -13,9 +13,11 @@ export const login = async (req, res) => {
 
     const validPassword = bcrypt.compareSync(contrasena, result[0].contrasena);
 
-    const [rows] = await pool.query("SELECT * FROM usuario WHERE correo = ?", [
-      correo,
-    ]);
+    const [rows] = await pool.query(
+      "SELECT id_usuario, nombre, apellidos, correo, rol, fecha_creacion, ultima_actualizacion,  estado " +
+        "FROM usuario WHERE correo = ?",
+      [correo]
+    );
 
     const token = await generarJWT(
       rows[0].id_usuario,
@@ -24,16 +26,23 @@ export const login = async (req, res) => {
 
     if (result.length === 1 && validPassword) {
       res.send({
-        rows: rows[0],
+        id_usuario: rows[0].id_usuario,
+        nombre: rows[0].nombre,
+        apellidos: rows[0].apellidos,
+        correo: rows[0].correo,
+        rol: rows[0].rol,
         token,
+        ok: true,
       });
     } else {
       res.send({
         mensaje: "Correo y/o contraseña invalidos",
+        ok: false,
       });
     }
   } catch (error) {
     return res.status(500).json({
+      ok: false,
       mensaje: "Algo salió mal, intentelo más tarde",
     });
   }
@@ -52,7 +61,8 @@ export const createUsuario = async (req, res) => {
     );
 
     if (result[0])
-      return res.status(400).send({
+      return res.send({
+        ok: false,
         mensaje: "Correo existente, ingrese otro",
       });
 
@@ -65,18 +75,19 @@ export const createUsuario = async (req, res) => {
     const token = await generarJWT(rows.insertId, nombre + " " + apellidos);
 
     res.send({
-      id_usuario: rows.id_usuario,
+      id_usuario: rows.insertId,
       nombre,
       apellidos,
-      contrasenaEncriptada,
       correo,
       rol,
-      estado,
       token,
+      ok: true,
       mensaje: "Usuario registrado exitosamente",
     });
   } catch (error) {
+    console.log("entro ee");
     return res.status(500).json({
+      error,
       mensaje: "Algo salió mal, intentelo más tarde",
     });
   }
@@ -92,7 +103,7 @@ export const renovarToken = async (req, res) => {
       [id_usuario]
     );
 
-    const { nombre, apellidos } = rows[0];
+    const { nombre, apellidos, correo, rol } = rows[0];
 
     const token = await generarJWT(id_usuario, nombre + " " + apellidos);
 
@@ -100,10 +111,14 @@ export const renovarToken = async (req, res) => {
       id_usuario,
       nombre,
       apellidos,
+      correo,
+      rol,
       token,
+      ok: true,
     });
   } catch (error) {
     return res.status(500).json({
+      ok: false,
       mensaje: "Algo salió mal, intentelo más tarde",
     });
   }
