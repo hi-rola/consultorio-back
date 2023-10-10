@@ -98,6 +98,7 @@ export const createDiagnostico = async (req, res) => {
       tercer_molar_inf_izq_gra,
       mensaje,
       id_usuario,
+      id_consulta,
     } = req.body;
 
     const [result] = await pool.query(
@@ -237,6 +238,8 @@ export const createDiagnostico = async (req, res) => {
       ]
     );
 
+    console.log(id_consulta);
+
     console.log("entro 1");
 
     const registrarUsuDiag = await registrarDiagnosticoUsuario(
@@ -244,8 +247,14 @@ export const createDiagnostico = async (req, res) => {
       id_usuario
     );
 
-    if (registrarUsuDiag === true) {
-      console.log("entro 2");
+    console.log("reUDia", registrarUsuDiag);
+
+    const updateEdoConsulta = await updateEstadoConsulta(id_consulta);
+
+    console.log(updateEdoConsulta);
+
+    if (registrarUsuDiag === true && updateEdoConsulta === true) {
+      console.log("entro update consulta");
       res.json({
         id_diagnostico: result.insertId,
         incisivo_central_sup_der_cla,
@@ -333,6 +342,16 @@ const registrarDiagnosticoUsuario = async (id_diagnostico, id_usuario) => {
   );
 
   if (rows.affectedRows === 1) return true;
+  return false;
+};
+
+const updateEstadoConsulta = async (id_consulta) => {
+  const [result] = await pool.query(
+    "UPDATE consulta SET estado = ? WHERE id_consulta = ?",
+    [2, id_consulta]
+  );
+
+  if (result.affectedRows === 1) return true;
   return false;
 };
 

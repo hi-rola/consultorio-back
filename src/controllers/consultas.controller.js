@@ -27,6 +27,25 @@ export const getConsultasById = async (req, res) => {
   }
 };
 
+export const getConsultaByIdUsuario = async (req, res) => {
+  try {
+    const { id_usuario } = req.params;
+    const [rows] = await pool.query(
+      "SELECT c.id_consulta, c.fecha, c.hora_inicio, c.hora_fin, c.estado " +
+        "FROM CONSULTA_USUARIO cu INNER JOIN USUARIO u on cu.id_usuario = u.id_usuario " +
+        "INNER JOIN CONSULTA c on c.id_consulta = cu.id_consulta " +
+        "WHERE cu.id_usuario = ?",
+      [id_usuario]
+    );
+
+    res.send(rows);
+  } catch (error) {
+    return res.status(500).json({
+      mensaje: "Algo salió mal, intentelo más tarde",
+    });
+  }
+};
+
 export const updateEstadoConsulta = async (req, res) => {
   try {
     const { id_consulta } = req.params;

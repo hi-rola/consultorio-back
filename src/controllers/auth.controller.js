@@ -85,7 +85,6 @@ export const createUsuario = async (req, res) => {
       mensaje: "Usuario registrado exitosamente",
     });
   } catch (error) {
-    console.log("entro ee");
     return res.status(500).json({
       error,
       mensaje: "Algo salió mal, intentelo más tarde",
