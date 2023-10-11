@@ -29,6 +29,8 @@ export const getConsultasById = async (req, res) => {
 
 export const getConsultaByIdUsuario = async (req, res) => {
   try {
+    //TODO: AGREGAR NOT IN (2) para no mostrar
+    //TODO: consultas con el estado: 2
     const { id_usuario } = req.params;
     const [rows] = await pool.query(
       "SELECT c.id_consulta, c.fecha, c.hora_inicio, c.hora_fin, c.estado " +
@@ -116,7 +118,7 @@ export const getConsultasPorFecha = async (req, res) => {
   try {
     const { fecha } = req.params;
     const [result] = await pool.query(
-      "SELECT * from consulta WHERE fecha = ? ORDER BY hora_inicio",
+      "SELECT * FROM CONSULTA WHERE fecha = ? AND estado NOT IN (2) ORDER BY hora_inicio",
       fecha
     );
     res.send(result);
